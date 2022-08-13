@@ -26,12 +26,29 @@ export class UserService {
   }
 
   async findAll(): Promise<Array<UserEntity>> {
-    return this.prisma.user.findMany()
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: false,
+        createdAt: true,
+        updatedAt: true
+      }
+    })
   }
 
   async findOne(id: string): Promise<UserEntity> {
     const user = await this.prisma.user.findUnique({
-      where: { id }
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: false,
+        createdAt: true,
+        updatedAt: true
+      }
     })
 
     if (!user) {
@@ -56,6 +73,14 @@ export class UserService {
         password: updateUserDto.password
           ? await argon2.hash(updateUserDto.password)
           : user.password
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: false,
+        createdAt: true,
+        updatedAt: true
       }
     })
   }

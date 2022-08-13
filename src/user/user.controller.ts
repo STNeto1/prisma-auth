@@ -17,27 +17,27 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  @ApiCreatedResponse({ description: 'User created.' })
+  @ApiCreatedResponse({ description: 'User created.', type: UserEntity })
   @ApiBadRequestResponse({ description: 'Email in use.' })
   async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.userService.create(createUserDto)
   }
 
   @Get()
-  @ApiOkResponse({ description: 'All users' })
+  @ApiOkResponse({ description: 'All users', type: [UserEntity] })
   async findAll(): Promise<Array<UserEntity>> {
     return this.userService.findAll()
   }
 
   @Get(':id')
-  @ApiOkResponse({ description: 'User from id' })
+  @ApiOkResponse({ description: 'User from id', type: UserEntity })
   @ApiNotFoundResponse({ description: 'User not found' })
   async findOne(@Param('id') id: string): Promise<UserEntity> {
     return this.userService.findOne(id)
   }
 
   @Patch(':id')
-  @ApiOkResponse({ description: 'User updated' })
+  @ApiOkResponse({ description: 'User updated', type: UserEntity })
   @ApiNotFoundResponse({ description: 'User not found' })
   @ApiBadRequestResponse({ description: 'Email in use.' })
   async update(

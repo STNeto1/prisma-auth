@@ -1,7 +1,7 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger'
 import { User } from '@prisma/client'
 
-export class UserEntity implements User {
+export class UserEntity implements Partial<User> {
   @ApiProperty({ type: 'string' })
   id: string
 
@@ -12,11 +12,11 @@ export class UserEntity implements User {
   email: string
 
   @ApiHideProperty()
-  password: string
+  password?: string = ''
 
-  @ApiProperty({ type: 'date' })
+  @ApiProperty({ type: 'string' })
   createdAt: Date
 
-  @ApiProperty({ type: 'date' })
+  @ApiProperty({ type: 'string' })
   updatedAt: Date
 }
