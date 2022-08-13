@@ -1,7 +1,7 @@
-import { ApiHideProperty, ApiProperty } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 import { User } from '@prisma/client'
 
-export class UserEntity implements Partial<User> {
+export class UserEntity implements Omit<User, 'password'> {
   @ApiProperty({ type: 'string' })
   id: string
 
@@ -10,9 +10,6 @@ export class UserEntity implements Partial<User> {
 
   @ApiProperty({ type: 'string' })
   email: string
-
-  @ApiHideProperty()
-  password?: string = ''
 
   @ApiProperty({ type: 'string' })
   createdAt: Date

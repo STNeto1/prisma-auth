@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common'
+import { User } from '@prisma/client'
 import * as argon2 from 'argon2'
 import { PrismaService } from '../prisma/prisma.service'
 import { CreateUserDto } from './dto/create-user.dto'
@@ -59,7 +60,7 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
-    const user = await this.findOne(id)
+    const user = (await this.findOne(id)) as User
 
     if (updateUserDto.email && updateUserDto.email !== user.email) {
       await this.checkEmailUsage(updateUserDto.email)
