@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common'
 import { User } from '@prisma/client'
 import * as argon2 from 'argon2'
+import { LoginDto } from '../auth/dto/login.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -54,6 +55,26 @@ export class UserService {
 
     if (!user) {
       throw new NotFoundException('User not found')
+    }
+
+    return user
+  }
+
+  async validate(data: LoginDto): Promise<UserEntity> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: data.email
+      }
+    })
+
+    if (!user) {
+      throw new BadRequestException('Invalid credentials')
+    }
+
+    const isValid = await argon2.verify(user.password, data.password)
+
+    if (!isValid) {
+      throw new BadRequestException('Invalid credentials')
     }
 
     return user
