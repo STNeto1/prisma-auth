@@ -9,6 +9,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
 import { PrismaService } from './prisma/prisma.service'
 
+declare const module: any
+
 async function bootstrap() {
   const fastify = new FastifyAdapter({
     logger: true
@@ -32,5 +34,10 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document)
 
   await app.listen(3000, '0.0.0.0')
+
+  if (module.hot) {
+    module.hot.accept()
+    module.hot.dispose(() => app.close())
+  }
 }
 bootstrap()
