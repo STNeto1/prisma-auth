@@ -1,12 +1,10 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
-  ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags
 } from '@nestjs/swagger'
-import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserEntity } from './entities/user.entity'
 import { UserService } from './user.service'
@@ -15,13 +13,6 @@ import { UserService } from './user.service'
 @Controller('api/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  @Post()
-  @ApiCreatedResponse({ description: 'User created.', type: UserEntity })
-  @ApiBadRequestResponse({ description: 'Email in use.' })
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
-    return this.userService.create(createUserDto)
-  }
 
   @Get()
   @ApiOkResponse({ description: 'All users', type: [UserEntity] })
