@@ -1,17 +1,17 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiTags
 } from '@nestjs/swagger'
+import type { FastifyReply } from 'fastify'
 import { CreateUserDto } from '../user/dto/create-user.dto'
 import { UserEntity } from '../user/entities/user.entity'
 import { AuthService } from './auth.service'
 import { CurrentUser } from './decorators/current-user.decorator'
 import { LoginDto } from './dto/login.dto'
 import { JwtAuthGuard } from './guard/jwt-guard'
-import { JwtReturn } from './types/jwt'
 
 @ApiTags('api/auth')
 @Controller('api/auth')
@@ -19,27 +19,27 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
-  @ApiCreatedResponse({
-    description: 'Auth token',
-    type: JwtReturn
-  })
+  @ApiNoContentResponse()
   @ApiBadRequestResponse({
     description: 'Invalid credentials'
   })
-  async login(@Body() data: LoginDto): Promise<JwtReturn> {
-    return this.authService.validateUser(data)
+  async login(@Body() data: LoginDto, @Res() reply: FastifyReply) {
+    const cookie = await this.authService.validateUser(data)
+
+    reply.header('Set-Cookie', cookie)
+    return reply.status(204).send()
   }
 
   @Post('register')
-  @ApiCreatedResponse({
-    description: 'Auth token',
-    type: JwtReturn
-  })
+  @ApiNoContentResponse()
   @ApiBadRequestResponse({
     description: 'Bad request'
   })
-  async register(@Body() data: CreateUserDto): Promise<JwtReturn> {
-    return this.authService.createUser(data)
+  async register(@Body() data: CreateUserDto, @Res() reply: FastifyReply) {
+    const cookie = await this.authService.createUser(data)
+
+    reply.header('Set-Cookie', cookie)
+    return reply.status(204).send()
   }
 
   @UseGuards(JwtAuthGuard)

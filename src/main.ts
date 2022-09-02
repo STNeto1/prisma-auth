@@ -1,3 +1,5 @@
+import type { FastifyCookieOptions } from '@fastify/cookie'
+import cookie from '@fastify/cookie'
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import {
@@ -15,6 +17,8 @@ async function bootstrap() {
   const fastify = new FastifyAdapter({
     logger: true
   })
+  fastify.register(cookie, {} as FastifyCookieOptions)
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     fastify
