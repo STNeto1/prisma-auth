@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common'
-import type { FastifyReply } from 'fastify'
+import { Response } from 'express'
 import { CreateUserDto } from '../user/dto/create-user.dto'
 import { UserEntity } from '../user/entities/user.entity'
 import { AuthService } from './auth.service'
@@ -12,19 +12,19 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
-  async login(@Body() data: LoginDto, @Res() reply: FastifyReply) {
+  async login(@Body() data: LoginDto, @Res() response: Response) {
     const cookie = await this.authService.validateUser(data)
 
-    reply.header('Set-Cookie', cookie)
-    return reply.status(204).send()
+    response.setHeader('Set-Cookie', cookie)
+    return response.status(204).send()
   }
 
   @Post('register')
-  async register(@Body() data: CreateUserDto, @Res() reply: FastifyReply) {
+  async register(@Body() data: CreateUserDto, @Res() response: Response) {
     const cookie = await this.authService.createUser(data)
 
-    reply.header('Set-Cookie', cookie)
-    return reply.status(204).send()
+    response.header('Set-Cookie', cookie)
+    return response.status(204).send()
   }
 
   @UseGuards(JwtAuthGuard)

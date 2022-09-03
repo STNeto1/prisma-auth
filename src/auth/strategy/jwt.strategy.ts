@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
-import { FastifyRequest } from 'fastify'
+import { Request } from 'express'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 
 import { UserEntity } from '../../user/entities/user.entity'
@@ -13,9 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private userService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: FastifyRequest) => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
+        (request: Request) => {
           return request?.cookies?.Authentication
         }
       ]),
