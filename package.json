@@ -22,13 +22,11 @@
   },
   "dependencies": {
     "@fastify/cookie": "^8.1.0",
-    "@fastify/static": "^6.5.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^9.0.0",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-fastify": "^9.0.9",
-    "@nestjs/swagger": "^6.0.5",
     "@prisma/client": "^4.2.1",
     "argon2": "^0.28.7",
     "class-transformer": "^0.5.1",
