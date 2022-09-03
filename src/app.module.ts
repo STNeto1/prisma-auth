@@ -10,7 +10,12 @@ import { UserModule } from './user/user.module'
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: true
+      autoSchemaFile: true,
+      context: ({ req, res }) => ({ req, res }),
+      cors: {
+        credentials: true,
+        origin: true
+      }
     }),
     UserModule,
     PrismaModule,
