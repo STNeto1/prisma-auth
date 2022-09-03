@@ -5,11 +5,12 @@ import {
 } from '@nestjs/common'
 import { User } from '@prisma/client'
 import * as argon2 from 'argon2'
-import { LoginDto } from '../auth/dto/login.dto'
+import { LoginInput } from '../auth/input/login.input'
+
 import { PrismaService } from '../prisma/prisma.service'
 import { CreateUserDto } from './dto/create-user.dto'
-import { UpdateUserDto } from './dto/update-user.dto'
 import { UserEntity } from './entities/user.entity'
+import { UpdateUserInput } from './input/update-user.input'
 
 @Injectable()
 export class UserService {
@@ -28,29 +29,12 @@ export class UserService {
   }
 
   async findAll(): Promise<Array<UserEntity>> {
-    return this.prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        password: false,
-        createdAt: true,
-        updatedAt: true
-      }
-    })
+    return this.prisma.user.findMany({})
   }
 
   async findOne(id: string): Promise<UserEntity> {
     const user = await this.prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        password: false,
-        createdAt: true,
-        updatedAt: true
-      }
+      where: { id }
     })
 
     if (!user) {
@@ -60,7 +44,7 @@ export class UserService {
     return user
   }
 
-  async validate(data: LoginDto): Promise<UserEntity> {
+  async validate(data: LoginInput): Promise<UserEntity> {
     const user = await this.prisma.user.findFirst({
       where: {
         email: data.email
@@ -80,7 +64,10 @@ export class UserService {
     return user
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserInput
+  ): Promise<UserEntity> {
     const user = (await this.findOne(id)) as User
 
     if (updateUserDto.email && updateUserDto.email !== user.email) {
@@ -95,14 +82,6 @@ export class UserService {
         password: updateUserDto.password
           ? await argon2.hash(updateUserDto.password)
           : user.password
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        password: false,
-        createdAt: true,
-        updatedAt: true
       }
     })
   }
