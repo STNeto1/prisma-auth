@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { CreateUserDto } from '../user/dto/create-user.dto'
 import { UserEntity } from '../user/entities/user.entity'
 import { UserService } from '../user/user.service'
-import { LoginDto } from './dto/login.dto'
+import { LoginInput } from './input/login.input'
+import { RegisterInput } from './input/register.input'
 
 @Injectable()
 export class AuthService {
@@ -12,13 +12,13 @@ export class AuthService {
     private userService: UserService
   ) {}
 
-  async validateUser(data: LoginDto) {
+  async validateUser(data: LoginInput) {
     const user = await this.userService.validate(data)
 
     return this.generateToken(user)
   }
 
-  async createUser(data: CreateUserDto) {
+  async createUser(data: RegisterInput) {
     const user = await this.userService.create(data)
 
     return this.generateToken(user)

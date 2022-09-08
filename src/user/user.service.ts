@@ -6,9 +6,9 @@ import {
 import { User } from '@prisma/client'
 import * as argon2 from 'argon2'
 import { LoginInput } from '../auth/input/login.input'
+import { RegisterInput } from '../auth/input/register.input'
 
 import { PrismaService } from '../prisma/prisma.service'
-import { CreateUserDto } from './dto/create-user.dto'
 import { UserEntity } from './entities/user.entity'
 import { UpdateUserInput } from './input/update-user.input'
 
@@ -16,7 +16,7 @@ import { UpdateUserInput } from './input/update-user.input'
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+  async create(createUserDto: RegisterInput): Promise<UserEntity> {
     await this.checkEmailUsage(createUserDto.email)
 
     return this.prisma.user.create({
